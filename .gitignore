@@ -41,4 +41,4 @@ yarn-error.log*
 next-env.d.ts
 
 /src/app/cheat/
-/src/app/api/cheat/
+/src/app/api/cheat/route.js
