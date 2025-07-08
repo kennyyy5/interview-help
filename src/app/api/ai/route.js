@@ -1,4 +1,8 @@
+// /app/api/cheat/route.js
 import { NextResponse } from "next/server";
+
+// ✅ Mark this route as dynamic so Next.js doesn’t statically analyze it at build time
+export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
   try {
