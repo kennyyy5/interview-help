@@ -13,7 +13,7 @@ export async function POST(req) {
     }
 
     // ✅ Move instantiation inside the POST function
-    const openai = new OpenAI({ apiKey });
+    const openai = new OpenAI({ apiKey:apiKey || process.env.OPENAI_API_KEY });
 
     const prompt = `Job description:\n${jobDesc}\n\nGive one of the toughest interview questions an interviewer might ask based on this job description. Only give the question—nothing else.`;
 
