@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
 export const config = { api: { bodyParser: false } };
-const openai = new OpenAI({ apiKey: process.env.OPEN_AI_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const RESUME = `Kehinde Adenuga
 Ontario, CA
 647-539-5968 kadenuga@uoguelph.ca linkedin.com/in/kenny-adenuga github.com/kennyyy5 kennyyy5.netlify.app
