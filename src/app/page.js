@@ -62,6 +62,7 @@ export default function Home() {
           className="border border-black rounded-md p-3 w-full shadow-sm"
           value={apiKey}
           onChange={(e) => setApiKey(e.target.value)}
+          required //changed
         />
 
         <textarea
