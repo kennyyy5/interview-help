@@ -1,7 +1,7 @@
 // /app/api/cheat/route.js
 import { NextResponse } from "next/server";
 
-// ✅ Mark this route as dynamic so Next.js doesn’t statically analyze it at build time
+// Disable static optimization to avoid build-time import of OpenAI
 export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
@@ -15,9 +15,8 @@ export async function POST(req) {
       );
     }
 
-    // ✅ Dynamically import OpenAI at runtime
+    // Dynamically import OpenAI at runtime only
     const { default: OpenAI } = await import("openai");
-
     const openai = new OpenAI({ apiKey });
 
     const prompt = `Job description:\n${jobDesc}\n\nGive one of the toughest interview questions an interviewer might ask based on this job description. Only give the question—nothing else.`;
