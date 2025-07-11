@@ -1,10 +1,11 @@
+// src/app/api/ask/route.js
 import { NextResponse } from "next/server";
-import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
+import { cert, getApps, initializeApp } from "firebase-admin/app";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-// Initialize firebase-admin once
+// initialize firebase-admin (unchanged)
 if (!getApps().length) {
   initializeApp({
     credential: cert({
@@ -18,58 +19,45 @@ if (!getApps().length) {
 export async function POST(req) {
   try {
     const authHeader = req.headers.get("Authorization") || "";
-    const idToken = authHeader.startsWith("Bearer ") ? authHeader.split("Bearer ")[1] : null;
+    const idToken = authHeader.startsWith("Bearer ")
+      ? authHeader.split("Bearer ")[1]
+      : null;
 
     const { jobDesc, apiKey } = await req.json();
     if (!jobDesc) {
-      return new NextResponse(
-        JSON.stringify({ error: "Missing job description." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+      return NextResponse.json({ error: "Missing job description." }, { status: 400 });
     }
 
-    let finalApiKey = apiKey;
-
+    // determine final key
+    let finalKey = apiKey;
     if (idToken) {
       try {
         await getAuth().verifyIdToken(idToken);
-        finalApiKey = process.env.OPENAI_API_KEY;
-      } catch (verifyError) {
-        console.warn("Invalid Firebase token. Using user-provided key.");
+        finalKey = process.env.OPENAI_API_KEY;
+      } catch {
+        console.warn("Invalid token; falling back to user key");
       }
     }
 
-    if (!finalApiKey) {
-      return new NextResponse(
-        JSON.stringify({ error: "No valid OpenAI API key available." }),
-        { status: 403, headers: { "Content-Type": "application/json" } }
-      );
+    if (!finalKey) {
+      return NextResponse.json({ error: "No valid OpenAI API key." }, { status: 403 });
     }
 
+    // 🚀 Lazy‑import and instantiate at runtime
     const { default: OpenAI } = await import("openai");
-    const openai = new OpenAI({ apiKey: finalApiKey });
+    const openai = new OpenAI({ apiKey: finalKey });
 
-    const prompt = `Job description:\n${jobDesc}\n\nGive one of the toughest interview questions an interviewer might ask based on this job description. Only give the question—nothing else.`;
+    const prompt = `Job description:\n${jobDesc}\n\nGive one of the toughest interview questions...`;
 
-    const response = await openai.chat.completions.create({
+    const resp = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
     });
 
-    const message = response.choices[0]?.message?.content || "No question generated.";
-
-    return new NextResponse(JSON.stringify({ message }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "s-maxage=60",
-      },
-    });
+    const message = resp.choices[0]?.message?.content || "No question generated.";
+    return NextResponse.json({ message });
   } catch (err) {
     console.error("AI route error:", err);
-    return new NextResponse(
-      JSON.stringify({ error: "Failed to fetch AI response." }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
