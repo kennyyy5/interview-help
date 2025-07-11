@@ -1,23 +1,53 @@
-// /app/api/cheat/route.js
 import { NextResponse } from "next/server";
+import { initializeApp, cert, getApps } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
 
-// Disable static optimization to avoid build-time import of OpenAI
 export const dynamic = 'force-dynamic';
+
+// Initialize firebase-admin once
+if (!getApps().length) {
+  initializeApp({
+    credential: cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    }),
+  });
+}
 
 export async function POST(req) {
   try {
-    const { jobDesc, apiKey } = await req.json();
+    const authHeader = req.headers.get("Authorization") || "";
+    const idToken = authHeader.startsWith("Bearer ") ? authHeader.split("Bearer ")[1] : null;
 
-    if (!jobDesc || !apiKey) {
+    const { jobDesc, apiKey } = await req.json();
+    if (!jobDesc) {
       return new NextResponse(
-        JSON.stringify({ error: "Missing job description or API key." }),
+        JSON.stringify({ error: "Missing job description." }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
 
-    // Dynamically import OpenAI at runtime only
+    let finalApiKey = apiKey;
+
+    if (idToken) {
+      try {
+        await getAuth().verifyIdToken(idToken);
+        finalApiKey = process.env.OPENAI_API_KEY;
+      } catch (verifyError) {
+        console.warn("Invalid Firebase token. Using user-provided key.");
+      }
+    }
+
+    if (!finalApiKey) {
+      return new NextResponse(
+        JSON.stringify({ error: "No valid OpenAI API key available." }),
+        { status: 403, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
     const { default: OpenAI } = await import("openai");
-    const openai = new OpenAI({ apiKey });
+    const openai = new OpenAI({ apiKey: finalApiKey });
 
     const prompt = `Job description:\n${jobDesc}\n\nGive one of the toughest interview questions an interviewer might ask based on this job description. Only give the question—nothing else.`;
 

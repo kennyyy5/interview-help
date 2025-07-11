@@ -1,14 +1,30 @@
 // FRONTEND - uses client
 "use client";
 import { useState, useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { getAuth } from "firebase/auth";
+import { auth } from "./firebase/config";
 
 export default function Home() {
   const [jobDesc, setJobDesc] = useState("");
-  const [apiKey, setApiKey] = useState("");
+  const [apiKeyInput, setApiKeyInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [aiInfo, setAiInfo] = useState("");
   const [soundOn, setSoundOn] = useState(true);
+
+  // Get Firebase user state
+  const [user, userLoading] = useAuthState(auth);
+
+  // Determine whether to use server key
+  const usingServerKey = !!user;
+
+  // If logged in, clear any manual API key
+  useEffect(() => {
+    if (usingServerKey) {
+      setApiKeyInput("");
+    }
+  }, [usingServerKey]);
 
   const speak = (text) => {
     const synth = window.speechSynthesis;
@@ -18,9 +34,7 @@ export default function Home() {
     utterance.rate = 1;
     const voices = synth.getVoices();
     const preferredVoice = voices.find(
-      (voice) =>
-        voice.name.includes("Google US English") ||
-        voice.name.includes("Samantha")
+      (v) => v.name.includes("Google US English") || v.name.includes("Samantha")
     );
     if (preferredVoice) utterance.voice = preferredVoice;
     synth.cancel();
@@ -28,19 +42,42 @@ export default function Home() {
   };
 
   const fetchAI = async () => {
-    setLoading(true);
     setError("");
+
+    if (!jobDesc.trim() || (!usingServerKey && !apiKeyInput.trim())) {
+      setError("Job Description and API key are required.");
+      return;
+    }
+
+    setLoading(true);
     setAiInfo("");
+
     try {
+      let idToken = null;
+      if (usingServerKey) {
+        idToken = await getAuth().currentUser.getIdToken();
+      }
+
       const res = await fetch("/api/ai", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobDesc, apiKey }),
+        headers: {
+          "Content-Type": "application/json",
+          ...(idToken && { Authorization: `Bearer ${idToken}` }),
+        },
+        body: JSON.stringify({
+          jobDesc,
+          apiKey: usingServerKey ? null : apiKeyInput
+        }),
       });
+
       const data = await res.json();
-      if (res.ok) setAiInfo(data.message);
-      else setError(data.error || "Something went wrong.");
-    } catch {
+      if (res.ok) {
+        setAiInfo(data.message);
+      } else {
+        setError(data.error || "Something went wrong.");
+      }
+    } catch (e) {
+      console.error(e);
       setError("Failed to load interview question.");
     } finally {
       setLoading(false);
@@ -56,26 +93,29 @@ export default function Home() {
       <main className="flex flex-col gap-8 items-center w-full max-w-2xl">
         <h1 className="text-3xl font-bold text-center">InterviewHelp</h1>
 
-        <input
-          type="password"
-          placeholder="Paste your OpenAI API key here"
-          className="border border-black rounded-md p-3 w-full shadow-sm"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-          required //changed
-        />
+        {!usingServerKey && (
+          <input
+            type="password"
+            placeholder="Paste your OpenAI API key*"
+            className="border border-black rounded-md p-3 w-full shadow-sm"
+            value={apiKeyInput}
+            onChange={(e) => setApiKeyInput(e.target.value)}
+            required
+          />
+        )}
 
         <textarea
           className="border border-black rounded-md p-3 w-full min-h-[12rem] resize-none shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Paste the job description here..."
+          placeholder="Paste the job description here*"
           value={jobDesc}
           onChange={(e) => setJobDesc(e.target.value)}
+          required
         ></textarea>
 
         <button
           className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition-colors disabled:opacity-50"
           onClick={fetchAI}
-          disabled={loading || !jobDesc.trim() || !apiKey.trim()}
+          disabled={loading || !jobDesc.trim() || (!usingServerKey && !apiKeyInput.trim())}
         >
           {loading ? "Generating..." : "Generate Interview Question!"}
         </button>
