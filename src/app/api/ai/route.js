@@ -1,11 +1,11 @@
 // src/app/api/ask/route.js
 import { NextResponse } from "next/server";
+import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
-import { cert, getApps, initializeApp } from "firebase-admin/app";
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
-// initialize firebase-admin (unchanged)
+// Initialize firebase-admin once
 if (!getApps().length) {
   initializeApp({
     credential: cert({
@@ -25,39 +25,49 @@ export async function POST(req) {
 
     const { jobDesc, apiKey } = await req.json();
     if (!jobDesc) {
-      return NextResponse.json({ error: "Missing job description." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing job description." },
+        { status: 400 }
+      );
     }
 
-    // determine final key
+    // Determine which key to use
     let finalKey = apiKey;
     if (idToken) {
       try {
         await getAuth().verifyIdToken(idToken);
         finalKey = process.env.OPENAI_API_KEY;
       } catch {
-        console.warn("Invalid token; falling back to user key");
+        console.warn("Invalid Firebase token; using provided key.");
       }
     }
 
     if (!finalKey) {
-      return NextResponse.json({ error: "No valid OpenAI API key." }, { status: 403 });
+      return NextResponse.json(
+        { error: "No valid OpenAI API key available." },
+        { status: 403 }
+      );
     }
 
-    // 🚀 Lazy‑import and instantiate at runtime
+    // Dynamically import and instantiate OpenAI at runtime
     const { default: OpenAI } = await import("openai");
     const openai = new OpenAI({ apiKey: finalKey });
 
-    const prompt = `Job description:\n${jobDesc}\n\nGive one of the toughest interview questions...`;
+    const prompt = `Job description:\n${jobDesc}\n\nGive one of the toughest interview questions an interviewer might ask based on this job description. Only give the question—nothing else.`;
 
-    const resp = await openai.chat.completions.create({
+    const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
     });
 
-    const message = resp.choices[0]?.message?.content || "No question generated.";
+    const message = response.choices[0]?.message?.content || "No question generated.";
     return NextResponse.json({ message });
+
   } catch (err) {
-    console.error("AI route error:", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("API route error:", err);
+    return NextResponse.json(
+      { error: "Failed to fetch AI response." },
+      { status: 500 }
+    );
   }
 }
