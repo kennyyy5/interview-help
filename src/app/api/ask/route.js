@@ -30,16 +30,21 @@ that boosted user engagement by 50%.
 Next.js, the OpenAI API, and Firebase to enhance study efficiency.
 • PinPoint — GDSC Hacks 2025: Co-developed PinPoint, a full-stack AI grocery planning web app that recommends
 budget-friendly, diet-specific items and includes a chatbot for meal and pricing suggestions.
+• TeamUp Chat App: Built a MERN-stack chat app with real-time Socket.io communication and secure JWT/bcrypt
+authentication, enabling tech professionals to connect for hackathons and networking.
+• FaithFlow: Designed and developed a cross-platform social media app in Flutter, integrating Firebase Authentication
+and Firestore for secure login and real-time data storage.
 Skills & Certifications
 • Programming Languages: C, Python, JavaScript, Java, SQL, NoSQL, R
 • Technologies: AWS, Docker, Git, MATLAB, LangChain, MS Office
 • Interpersonal skills: Team Collaboration, Leadership, Communication
 • Certifications: Introducing Artificial Intelligence: Training for the Road Ahead by CARE AI, Complete
 Python, Django, Data Science and ML Guide Bootcamp by Udemy, IBM Z Xplore – Concepts
-Activities
+Activities, Introducing Artificial Intelligence: Training for the Road Ahead by CARE AI, The Complete
+2024 Web Development Bootcamp by Udemy, SEO by HubSpot Academy, IBM Z Xplore - Concepts
 • Member: ColorStack, SOCIS, Guelph Coding Community, GDSC Guelph (2023–Present)
 • Participant: CAN-CWiC 2024, WACE Global Challenge, GDSCHacks 2025
-• Peer Helper: University of Guelph (2024–Present)`; // push to github
+• Peer Helper: University of Guelph (2024–Present)`; 
 
 export async function POST(req) {
   try {
