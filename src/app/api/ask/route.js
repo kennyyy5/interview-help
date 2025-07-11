@@ -5,7 +5,41 @@ export const config = { api: { bodyParser: false } };
 
 const RESUME = `Kehinde Adenuga
 Ontario, CA
-...`; // truncated for brevity
+647-539-5968 kadenuga@uoguelph.ca linkedin.com/in/kenny-adenuga github.com/kennyyy5 kennyyy5.netlify.app
+Education
+• University of Guelph Guelph, ON
+Bachelor in Computer Science COOP, Minor in Mathematics.; GPA: 3.5 Sep. 2023 – May 2028
+Experience
+• PM Accelerator Remote
+Software Engineering Intern - AI/ML Apr. 2025 - Present
+◦ Developed AI applications in an agile team with product managers, designers, and data scientists.
+◦ Implemented the frontend in Flutter for cross-platform support
+• Headstarter AI Remote
+Software Engineering Fellow July 2024 - Sep. 2024
+◦ Designed and developed 5+ AI applications and APIs with 98% accuracy, using Next.js, OpenAI, Stripe
+API, and Pinecone.
+◦ Worked in a 4-person agile team, applying MVC design patterns to streamline development and enhance
+code maintainability.
+Projects
+• Airline Passenger Satisfaction: Performed data analysis and visualization using Python (NumPy, pandas), Jupyter
+Notebook, and Excel.
+• AskPDF — Dawson College AI Making Challenge: Built an AI chatbot using RAG to answer questions from
+PDFs, leveraging AstraDB for vector search, the OpenAI API for embeddings, and a responsive Next.js/MUI front end
+that boosted user engagement by 50%.
+• AI Flashcards Maker — Ignition Hacks 2024: Developed an AI-powered flashcard web app in a team of four using
+Next.js, the OpenAI API, and Firebase to enhance study efficiency.
+• PinPoint — GDSC Hacks 2025: Co-developed PinPoint, a full-stack AI grocery planning web app that recommends
+budget-friendly, diet-specific items and includes a chatbot for meal and pricing suggestions.
+Skills & Certifications
+• Programming Languages: C, Python, JavaScript, Java, SQL, NoSQL, R
+• Technologies: AWS, Docker, Git, MATLAB, LangChain, MS Office
+• Interpersonal skills: Team Collaboration, Leadership, Communication
+• Certifications: Introducing Artificial Intelligence: Training for the Road Ahead by CARE AI, Complete
+Python, Django, Data Science and ML Guide Bootcamp by Udemy, IBM Z Xplore – Concepts
+Activities
+• Member: ColorStack, SOCIS, Guelph Coding Community, GDSC Guelph (2023–Present)
+• Participant: CAN-CWiC 2024, WACE Global Challenge, GDSCHacks 2025
+• Peer Helper: University of Guelph (2024–Present)`; // push to github
 
 export async function POST(req) {
   try {
