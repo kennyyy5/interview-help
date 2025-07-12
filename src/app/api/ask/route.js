@@ -50,7 +50,7 @@ export async function POST(req) {
       return NextResponse.json({ error: "No question provided." }, { status: 400 });
     }
     if (!jobDesc) {
-      return NextResponse.json({ error: "No job description provided." }, { status: 400 });
+      jobDesc = ""
     }
 
     const { default: OpenAI } = await import("openai");
@@ -67,9 +67,9 @@ export async function POST(req) {
       `Give your answer in bullet points that would take about 1.5 to 2 minutes to say out loud.`,
       `Vary sentence structure, use personal pronouns, and avoid technical jargon unless needed.`,
       `Q: "${question}"`,
-      `If it's a behavioral, situational, or background question, give a brief story using the STAR format (Situation, Task, Action, Result). End with what was learned.`,
-      `Situational questions are hypothetical interview questions that ask you how you would handle a specific scenario in the future. They usually start with phrases like:\n\n“What would you do if...”, “How would you handle...”, “Suppose you were faced with...”`,
-      `If it's a technical question, explain clearly and in detail, then give a specific example.`,
+      `For any question that asks how you would handle, design, or approach a scenario (including those with technical elements) or behavioural questions or situational questions or background questions, respond with a brief story using the STAR format (Situation, Task, Action, Result). End with what was learned.`,
+  `For purely technical questions that ask you to explain a concept, process, or solution, respond with a clear explanation followed by a specific example.`,
+  `Situational questions are hypothetical interview questions that ask you how you would handle a specific scenario in the future. They usually start with phrases like:\n\n“What would you do if...”, “How would you handle...”, “Suppose you were faced with...”`,
       `Use the resume and job description below to guide the response.`,
       `--- RESUME ---`,
       RESUME,
