@@ -53,10 +53,24 @@ export async function POST(req) {
     const { default: OpenAI } = await import("openai");
     const openai = new OpenAI({ apiKey: finalKey });
 
-    const prompt = `Job description:\n${jobDesc}\n\nGive one of the toughest interview questions an interviewer might ask based on this job description. Only give the question—nothing else.`;
+    const prompt = `
+Job description:
+${jobDesc}
+
+Act like a top-tier interviewer at a world-class company. Generate **one** extremely tough, thought-provoking interview question based on the job description **that is not generic, common, or already widely used**.
+
+The question must:
+- Be unique and unexpected
+- Test deeper thinking, adaptability, or relevant skills
+- Avoid repeating typical questions like "Why should we hire you?" or "Tell me about yourself"
+
+Return **only the question text**. Do not include explanations or context.
+`.trim();
+
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
+      temperature:0.7,
       messages: [{ role: "user", content: prompt }],
     });
 

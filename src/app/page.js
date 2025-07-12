@@ -12,6 +12,8 @@ export default function Home() {
   const [error, setError] = useState("");
   const [aiInfo, setAiInfo] = useState("");
   const [soundOn, setSoundOn] = useState(true);
+  const [history, setHistory] = useState([]);
+
 
   // Get Firebase user state
   const [user, userLoading] = useAuthState(auth);
