@@ -113,7 +113,7 @@ export default function Home() {
         {loading ? "Thinking…" : "Generate Answer"}
       </button>
 
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+    
 
       {question && (
         <div className="w-full max-w-xl bg-slate-100 p-4 rounded-lg shadow mb-4">
