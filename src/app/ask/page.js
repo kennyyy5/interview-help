@@ -107,7 +107,7 @@ export default function Home() {
 
       <button
         className="mb-6 px-6 py-3 bg-black text-white rounded-full disabled:opacity-50"
-        onClick={fetchAnswer}
+        
         disabled={loading || !question.trim()}
       >
         {loading ? "Thinking…" : "Generate Answer"}
