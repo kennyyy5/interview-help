@@ -74,6 +74,15 @@ export async function POST(req) {
       `Vary sentence structure, use personal pronouns, and avoid technical jargon unless needed.`,
       `Q: "${question}"`,
       `If it's a behavioral or situational or background question, give a brief story using the STAR format (Situation, Task, Action, Result). End with what was learned.`,
+      `Situational questions are hypothetical interview questions that ask you how you would handle a specific scenario in the future. They usually start with phrases like:
+
+“What would you do if...”
+
+“How would you handle...”
+
+“How would you approach...”
+
+“Suppose you were faced with...”`
       `If it's a technical question, explain clearly and in detail, then give a specific example.`,
       `Use the resume and job description below to guide the response.`,
       `--- RESUME ---`,
