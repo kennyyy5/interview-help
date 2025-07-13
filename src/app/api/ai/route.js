@@ -57,12 +57,7 @@ export async function POST(req) {
 Job description:
 ${jobDesc}
 
-Act like a top-tier interviewer at a world-class company. Generate **one** extremely tough, thought-provoking interview question based on the job description **that is not generic, common, or already widely used**.
-
-The question must:
-- Be unique and unexpected
-- Test deeper thinking, adaptability, or relevant skills
-- Avoid repeating typical questions like "Why should we hire you?" or "Tell me about yourself"
+Act like a top-tier interviewer. Generate **one** tough interview question based on the job description that is likely to be asked.
 
 Return **only the question text**. Do not include explanations or context.
 `.trim();
