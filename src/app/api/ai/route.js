@@ -23,7 +23,7 @@ export async function POST(req) {
       ? authHeader.split("Bearer ")[1]
       : null;
 
-    const { jobDesc, apiKey } = await req.json();
+    const { jobDesc, apiKey, history } = await req.json();
     if (!jobDesc) {
       return NextResponse.json(
         { error: "Missing job description." },
@@ -53,13 +53,27 @@ export async function POST(req) {
     const { default: OpenAI } = await import("openai");
     const openai = new OpenAI({ apiKey: finalKey });
 
+    const formattedHistory = (Array.isArray(history) ? history : [])
+  .filter((q) => typeof q === "string")
+  .map((q, i) => `${i + 1}. ${q}`)
+  .join("\n");
+
     const prompt = `
 Job description:
 ${jobDesc}
 
 Act like a top-tier interviewer. Generate **one** tough interview question based on the job description that is likely to be asked.
 
-Return **only the question text**. Do not include explanations or context.
+Avoid any question that is similar to the ones listed below.
+
+Past questions to avoid:
+${formattedHistory || "None"}
+
+Requirements:
+- Return **only the new question**, nothing else.
+- Do **not** repeat or closely resemble any of the listed questions.
+- The question must be clear, specific, and relevant to the job.
+Generate a fresh, challenging question now.
 `.trim();
 
 

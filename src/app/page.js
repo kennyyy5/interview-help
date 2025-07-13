@@ -68,16 +68,28 @@ export default function Home() {
         },
         body: JSON.stringify({
           jobDesc,
-          apiKey: usingServerKey ? null : apiKeyInput
+          apiKey: usingServerKey ? null : apiKeyInput,
+          history: history
+
+
         }),
       });
 
       const data = await res.json();
       if (res.ok) {
-        setAiInfo(data.message);
-      } else {
-        setError(data.error || "Something went wrong.");
-      }
+  const newQuestion = data.message?.trim();
+  if (!newQuestion) {
+    setError("AI did not generate a valid question.");
+  } else if (history.includes(newQuestion)) {
+    setError("This question was already generated. Try again.");
+  } else {
+    setAiInfo(newQuestion);
+    setHistory((prev) => [...prev, newQuestion]);
+  }
+} else {
+  setError(data.error || "Something went wrong.");
+}
+
     } catch (e) {
       console.error(e);
       setError("Failed to load interview question.");
