@@ -62,7 +62,7 @@ export async function POST(req) {
 Job description:
 ${jobDesc}
 
-Act like a top-tier interviewer. Generate **one** tough interview question based on the job description that is likely to be asked.
+Act like a top-tier interviewer. Generate **one** tough interview question based on the job description that is VERY likely to be asked.
 
 Avoid any question that is similar to the ones listed below.
 
@@ -71,7 +71,7 @@ ${formattedHistory || "None"}
 
 Requirements:
 - Return **only the new question**, nothing else.
-- Do **not** repeat or closely resemble any of the listed questions.
+- Do **not** repeat or resemble any of the listed questions in any way - even loosely.
 - The question must be clear, specific, and relevant to the job.
 Generate a fresh, challenging question now.
 `.trim();
