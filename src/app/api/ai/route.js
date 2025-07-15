@@ -58,22 +58,29 @@ export async function POST(req) {
   .map((q, i) => `${i + 1}. ${q}`)
   .join("\n");
 
-    const prompt = `
-Job description:
+    const prompt = `Job description:
 ${jobDesc}
 
-Act like a top-tier interviewer. Generate **one** tough interview question based on the job description that is VERY likely to be asked.
-
-Avoid any question that is similar to the ones listed below.
-
-Past questions to avoid:
-${formattedHistory || "None"}
+You are a top-tier interviewer for this role. Generate **one** challenging and **totally unique** interview question that fits this role and is likely to be asked by a real interviewer.
 
 Requirements:
-- Return **only the new question**, nothing else.
-- Do **not** repeat or resemble any of the listed questions in any way - even loosely.
-- The question must be clear, specific, and relevant to the job.
-Generate a fresh, challenging question now.
+
+1. The question must NOT be the same as, or similar in topic, wording, structure, or intent to **any** of the following previously asked questions:
+${formattedHistory || "None"}
+
+2. The question should be **general enough** to apply broadly to this type of role — do not make it overly specific to small job description details.
+
+3. Vary the type of question. You may choose:
+   - Behavioral (e.g., Tell me about a time...)
+   - Situational (e.g., How would you handle…)
+   - Conceptual technical (e.g., What is an API? How does REST work?)
+   - Role-fit or communication (e.g., What makes a great teammate in a remote team?)
+
+4. Do NOT ask any coding problems, whiteboarding challenges, or system design tasks.
+
+5. The question should be thoughtful, professionally worded, and prompt a meaningful spoken response in an interview.
+
+Return only the question text. Do not add explanations or context.
 `.trim();
 
 
