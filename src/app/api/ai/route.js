@@ -61,27 +61,40 @@ export async function POST(req) {
     const prompt = `Job description:
 ${jobDesc}
 
-You are a top-tier interviewer for this role. Generate **one** challenging and **totally unique** interview question that fits this role and is likely to be asked by a real interviewer.
+You are an interviewer hiring for this role. Generate exactly **one** realistic interview question.
 
 Requirements:
 
-1. The question must NOT be the same as, or similar in topic, wording, structure, or intent to **any** of the following previously asked questions:
+1. The question must NOT resemble — in topic, theme wording, structure, or intent — **any** of the following previously asked questions:
 ${formattedHistory || "None"}
 
-2. The question should be **general enough** to apply broadly to this type of role — do not make it overly specific to small job description details.
+2. The question must be realistic — the kind a hiring manager is very likely to actually ask in an interview.
 
-3. Vary the type of question. You may choose:
-   - Behavioral (e.g., Tell me about a time...)
-   - Situational (e.g., How would you handle…)
-   - Conceptual technical (e.g., What is an API? How does REST work?)
-   - Role-fit or communication (e.g., What makes a great teammate in a remote team?)
+3. Do NOT ask vague, hypothetical, or generic project management questions like:
+   • “Imagine you’re tasked with improving accuracy across departments…”
+   • “How would you manage a project with multiple stakeholders?”
 
-4. Do NOT ask any coding problems, whiteboarding challenges, or system design tasks.
+4. Keep the question general enough to apply broadly to the role — avoid niche or hyper-specific phrasing from the job description.
 
-5. The question should be thoughtful, professionally worded, and prompt a meaningful spoken response in an interview.
+5. The question should be:
+   • General but deep — testing critical thinking, self-awareness, or communication
+   • OR technical — testing conceptual understanding of tools like SQL, Power BI, Snowflake, data cleaning, workflow documentation, or automation
 
-Return only the question text. Do not add explanations or context.
-`.trim();
+6. Vary the question type. You may choose:
+   • Behavioral (e.g., Tell me about a time…)
+   • Situational (e.g., How would you handle…)
+   • Technical-conceptual (e.g., What is an API?)
+   • Communication or role-fit (e.g., What makes a great teammate?)
+
+7. Do NOT ask:
+   • Coding problems
+   • System design questions
+   • Whiteboard challenges
+
+8. The question should be professionally worded, concise, and prompt a meaningful spoken response.
+
+Return ONLY the question. Do not include explanations or context.`;
+
 
 
     const response = await openai.chat.completions.create({
