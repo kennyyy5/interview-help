@@ -65,35 +65,34 @@ You are an interviewer hiring for this role. Generate exactly **one** realistic 
 
 Requirements:
 
-1. The question must NOT resemble — in topic, theme wording, structure, or intent — **any** of the following previously asked questions:
-${formattedHistory || "None"}
+1. Alternate between question types to ensure a 50/50 balance of:
+   • Technical questions — testing knowledge of tools, skills, and concepts mentioned in the job description.
+   • Behavioral or situational questions — testing communication, self-awareness, critical thinking, or decision-making.
 
-2. The question must be realistic — the kind a hiring manager is very likely to actually ask in an interview.
+2. The question must NOT resemble — in topic, theme, wording, structure, or intent — **any** of the following previously asked questions:
+${formattedHistory || "None"}
 
 3. Do NOT ask vague, hypothetical, or generic project management questions like:
    • “Imagine you’re tasked with improving accuracy across departments…”
    • “How would you manage a project with multiple stakeholders?”
 
-4. Keep the question general enough to apply broadly to the role — avoid niche or hyper-specific phrasing from the job description.
+4. Keep the question general enough to apply broadly to the role — avoid niche or overly specific phrasing from the job description.
 
 5. The question should be:
-   • General but deep — testing critical thinking, self-awareness, or communication
-   • OR technical — testing conceptual understanding of tools like SQL, Power BI, Snowflake, data cleaning, workflow documentation, or automation
+   • Realistic — something a hiring manager would likely ask
+   • Concise — professionally worded to prompt a strong spoken answer
 
-6. Vary the question type. You may choose:
-   • Behavioral (e.g., Tell me about a time…)
-   • Situational (e.g., How would you handle…)
-   • Technical-conceptual (e.g., What is an API?)
-   • Communication or role-fit (e.g., What makes a great teammate?)
-
-7. Do NOT ask:
-   • Coding problems
+6. Do NOT ask:
+   • Coding challenges
    • System design questions
-   • Whiteboard challenges
+   • Whiteboard problems
 
-8. The question should be professionally worded, concise, and prompt a meaningful spoken response.
+7. Choose **either**:
+   • A technical-conceptual or practical question (e.g., "How would you clean inconsistent customer records across sources using SQL?")
+   • A behavioral or situational question (e.g., "Tell me about a time you had to challenge a teammate's assumptions with data.")
 
-Return ONLY the question. Do not include explanations or context.`;
+Return ONLY the interview question — no explanations, no comments.`;
+
 
 
 
