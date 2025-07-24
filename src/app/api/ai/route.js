@@ -58,40 +58,48 @@ export async function POST(req) {
   .map((q, i) => `${i + 1}. ${q}`)
   .join("\n");
 
-    const prompt = `Job description:
+    const prompt = `Job Description:
 ${jobDesc}
 
-You are an interviewer hiring for this role. Generate exactly **one** realistic interview question.
+You are an interviewer hiring for this role. Generate exactly **one** realistic and professionally worded interview question.
 
 Requirements:
 
-1. Alternate between question types to ensure a 50/50 balance of:
-   • Technical questions — testing knowledge of tools, skills, and concepts mentioned in the job description.
-   • Behavioral or situational questions — testing communication, self-awareness, critical thinking, or decision-making.
+1. Alternate between question types to maintain approximately a 50/50 balance:
+   • Technical questions — assessing knowledge of tools, concepts, and skills relevant to the job description.
+   • Behavioral or situational questions — assessing communication, self-awareness, decision-making, or problem-solving skills.
 
-2. The question must NOT resemble — in topic, theme, wording, structure, or intent — **any** of the following previously asked questions:
+2. Behavioral and situational questions may include:
+   • Situational Scenarios
+   • Problem-Solving & Analytical Thinking
+   • Cultural Fit / Motivation
+   • Self-Reflection / Growth
+   • General Background / Past Experience
+
+3. The question must NOT overlap in topic, theme, structure, or intent with any previously asked questions:
 ${formattedHistory || "None"}
 
-3. Do NOT ask vague, hypothetical, or generic project management questions like:
+4. Do NOT ask vague or overused project management questions, such as:
    • “Imagine you’re tasked with improving accuracy across departments…”
    • “How would you manage a project with multiple stakeholders?”
 
-4. Keep the question general enough to apply broadly to the role — avoid niche or overly specific phrasing from the job description.
+5. Avoid niche or overly specific phrasing from the job description. The question should apply broadly to someone in the role.
 
-5. The question should be:
+6. The question must be:
    • Realistic — something a hiring manager would likely ask
-   • Concise — professionally worded to prompt a strong spoken answer
+   • Concise — clear and focused to prompt a thoughtful spoken answer
 
-6. Do NOT ask:
+7. Do NOT ask:
    • Coding challenges
    • System design questions
-   • Whiteboard problems
+   • Whiteboard-style problems
 
-7. Choose **either**:
-   • A technical-conceptual or practical question (e.g., "How would you clean inconsistent customer records across sources using SQL?")
-   • A behavioral or situational question (e.g., "Tell me about a time you had to challenge a teammate's assumptions with data.")
+8. Choose **one** of the following formats:
+   • A practical or conceptual technical question (e.g., "How would you clean inconsistent customer records across sources using SQL?")
+   • A behavioral or situational question (e.g., "Tell me about a time you had to challenge a teammate's assumptions using data.")
 
 Return ONLY the interview question — no explanations, no comments.`;
+
 
 
 
