@@ -13,7 +13,7 @@ export default function Home() {
   const [aiInfo, setAiInfo] = useState("");
   const [soundOn, setSoundOn] = useState(true);
   const [history, setHistory] = useState([]);
-  const [questionType, setQuestionType] = useState("behavioral");
+ 
 
 
   // Get Firebase user state
@@ -71,7 +71,7 @@ export default function Home() {
           jobDesc,
           apiKey: usingServerKey ? null : apiKeyInput,
           history: history,
-          questionType: questionType
+          
           
 
         }),
@@ -119,18 +119,7 @@ export default function Home() {
           onChange={(e) => setJobDesc(e.target.value)}
           required
         ></textarea>
-        <div className="w-full">
-  <label htmlFor="questionType" className="block font-medium mb-1">Question Type</label>
-  <select
-    id="questionType"
-    className="border border-black rounded-md p-3 w-full shadow-sm"
-    value={questionType}
-    onChange={(e) => setQuestionType(e.target.value)}
-  >
-    <option value="behavioral">Behavioral / Situational</option>
-    <option value="technical">Technical</option>
-  </select>
-</div>
+       
 
 
         <button
