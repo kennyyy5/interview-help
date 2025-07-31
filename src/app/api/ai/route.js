@@ -23,7 +23,7 @@ export async function POST(req) {
       ? authHeader.split("Bearer ")[1]
       : null;
 
-    const { jobDesc, apiKey, history } = await req.json();
+    const { jobDesc, apiKey, history, questionType } = await req.json();
     if (!jobDesc) {
       return NextResponse.json(
         { error: "Missing job description." },
@@ -57,24 +57,31 @@ export async function POST(req) {
   .filter((q) => typeof q === "string")
   .map((q, i) => `${i + 1}. ${q}`)
   .join("\n");
+  let promptCategory = "";
 
-    const prompt = `Job Description:
+if (questionType === "technical") {
+  promptCategory = `
+Generate exactly one practical or conceptual technical interview question that tests tools, concepts, or skills relevant to the job description.`;
+} else if (questionType === "behavioral") {
+  promptCategory = `
+Generate exactly one behavioral or situational interview question that evaluates communication, self-awareness, decision-making, or problem-solving.`;
+}
+
+const prompt = `Job Description:
 ${jobDesc}
 
 You are an interviewer hiring for this role. Generate exactly **one** realistic and professionally worded interview question.
 
 Requirements:
 
-1. Alternate between question types to maintain approximately a 50/50 balance:
-   • Technical questions — assessing knowledge of tools, concepts, and skills relevant to the job description.
-   • Behavioral or situational questions — assessing communication, self-awareness, decision-making, or problem-solving skills.
+${promptCategory}
 
 2. Behavioral and situational questions may include:
-   • Situational Scenarios
-   • Problem-Solving & Analytical Thinking
-   • Cultural Fit / Motivation
-   • Self-Reflection / Growth
-   • General Background / Past Experience
+   • Situational scenarios
+   • Problem-solving & analytical thinking
+   • Cultural fit / motivation
+   • Self-reflection / growth
+   • General background / past experience
 
 3. The question must NOT overlap in topic, theme, structure, or intent with any previously asked questions:
 ${formattedHistory || "None"}
@@ -83,10 +90,10 @@ ${formattedHistory || "None"}
    • “Imagine you’re tasked with improving accuracy across departments…”
    • “How would you manage a project with multiple stakeholders?”
 
-5. Avoid niche or overly specific phrasing from the job description. The question should apply broadly to someone in the role.
+5. Avoid niche or overly specific phrasing from the job description. Keep it broadly applicable to someone in this role.
 
-6. The question must be:
-   • Realistic — something a hiring manager would likely ask
+6. Ensure the question is:
+   • Realistic — something a hiring manager would actually ask
    • Concise — clear and focused to prompt a thoughtful spoken answer
 
 7. Do NOT ask:
@@ -99,7 +106,6 @@ ${formattedHistory || "None"}
    • A behavioral or situational question (e.g., "Tell me about a time you had to challenge a teammate's assumptions using data.")
 
 Return ONLY the interview question — no explanations, no comments.`;
-
 
 
 
