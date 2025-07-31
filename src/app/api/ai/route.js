@@ -61,10 +61,32 @@ export async function POST(req) {
 
 if (questionType === "technical") {
   promptCategory = `
-Generate exactly one practical or conceptual technical interview question that tests tools, concepts, or skills relevant to the job description.`;
+1. The question must be a practical or conceptual **technical interview question** relevant to the role. It should assess skills, tools, or technical knowledge, such as:
+
+   • Conceptual/Knowledge-Based Questions:
+     - Explain concepts like HTTP, REST, or networking basics.
+     - Describe how a technology works (e.g., garbage collection in Java).
+     - Understanding of algorithms and data structures.
+
+   • Testing & QA Questions:
+     - Understanding manual vs automated testing.
+     - Familiarity with testing frameworks like Selenium, JUnit, TestNG.
+
+   • Technical Problem-Solving Questions:
+     - How to optimize performance or memory usage.
+     - Handling concurrency, race conditions, or error scenarios.
+
+   • Tool & Technology-Specific Questions:
+     - Using Git and version control best practices.
+     - Using CI/CD pipelines.
+     - Experience with frameworks or languages (React, Angular, Python, etc.).
+
+   • API and Database Questions:
+     - Understanding NoSQL vs SQL databases.
+`;
 } else if (questionType === "behavioral") {
   promptCategory = `
-Generate exactly one behavioral or situational interview question that evaluates communication, self-awareness, decision-making, or problem-solving.`;
+1. The question must be a **behavioral or situational interview question** that assesses communication, decision-making, or problem-solving skills.`;
 }
 
 const prompt = `Job Description:
@@ -77,11 +99,11 @@ Requirements:
 ${promptCategory}
 
 2. Behavioral and situational questions may include:
-   • Situational scenarios
-   • Problem-solving & analytical thinking
-   • Cultural fit / motivation
-   • Self-reflection / growth
-   • General background / past experience
+   • Situational Scenarios
+   • Problem-Solving & Analytical Thinking
+   • Cultural Fit / Motivation
+   • Self-Reflection / Growth
+   • General Background / Past Experience
 
 3. The question must NOT overlap in topic, theme, structure, or intent with any previously asked questions:
 ${formattedHistory || "None"}
@@ -90,10 +112,10 @@ ${formattedHistory || "None"}
    • “Imagine you’re tasked with improving accuracy across departments…”
    • “How would you manage a project with multiple stakeholders?”
 
-5. Avoid niche or overly specific phrasing from the job description. Keep it broadly applicable to someone in this role.
+5. Avoid niche or overly specific phrasing from the job description. The question should apply broadly to someone in the role.
 
-6. Ensure the question is:
-   • Realistic — something a hiring manager would actually ask
+6. The question must be:
+   • Realistic — something a hiring manager would likely ask
    • Concise — clear and focused to prompt a thoughtful spoken answer
 
 7. Do NOT ask:
@@ -106,6 +128,9 @@ ${formattedHistory || "None"}
    • A behavioral or situational question (e.g., "Tell me about a time you had to challenge a teammate's assumptions using data.")
 
 Return ONLY the interview question — no explanations, no comments.`;
+
+
+
 
 
 
