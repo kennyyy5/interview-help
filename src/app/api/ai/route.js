@@ -23,7 +23,7 @@ export async function POST(req) {
       ? authHeader.split("Bearer ")[1]
       : null;
 
-    const { jobDesc, apiKey, history } = await req.json();
+    const { jobDesc, apiKey, history, questionType } = await req.json();
     if (!jobDesc) {
       return NextResponse.json(
         { error: "Missing job description." },
@@ -57,8 +57,37 @@ export async function POST(req) {
   .filter((q) => typeof q === "string")
   .map((q, i) => `${i + 1}. ${q}`)
   .join("\n");
-  
+  let promptCategory = "";
 
+if (questionType === "technical") {
+  promptCategory = `
+1. The question must be a practical or conceptual **technical interview question** relevant to the role. It should assess skills, tools, or technical knowledge, such as:
+
+   • Conceptual/Knowledge-Based Questions:
+     - Explain concepts like HTTP, REST, or networking basics.
+     - Describe how a technology works (e.g., garbage collection in Java).
+     - Understanding of algorithms and data structures.
+
+   • Testing & QA Questions:
+     - Understanding manual vs automated testing.
+     - Familiarity with testing frameworks like Selenium, JUnit, TestNG.
+
+   • Technical Problem-Solving Questions:
+     - How to optimize performance or memory usage.
+     - Handling concurrency, race conditions, or error scenarios.
+
+   • Tool & Technology-Specific Questions:
+     - Using Git and version control best practices.
+     - Using CI/CD pipelines.
+     - Experience with frameworks or languages (React, Angular, Python, etc.).
+
+   • API and Database Questions:
+     - Understanding NoSQL vs SQL databases.
+`;
+} else if (questionType === "behavioral") {
+  promptCategory = `
+1. The question must be a **behavioral or situational interview question** that assesses communication, decision-making, or problem-solving skills.`;
+}
 
 const prompt = `Job Description:
 ${jobDesc}
@@ -67,33 +96,14 @@ You are an interviewer hiring for this role. Generate exactly **one** realistic 
 
 Requirements:
 
-1. Choose exactly one of the following formats (aim for a 50/50 balance overall):
-• A technical question (practical or conceptual)
-• A behavioral or situational question
+${promptCategory}
 
----
-
-**If generating a technical question**, it should assess knowledge or hands-on experience with any of the following:
-   • Conceptual understanding (e.g., HTTP, REST, garbage collection)
-   • Testing frameworks (e.g., Selenium, TestNG, JUnit)
-   • Manual vs automated testing
-   • Git/version control best practices
-   • CI/CD pipelines and DevOps tooling
-   • Programming frameworks (e.g., React, Angular, Python)
-   • API design and usage
-   • SQL vs NoSQL databases
-   • Troubleshooting, optimization, or error handling in code
-
----
-
-**If generating a behavioral/situational question**, it should assess:
-   • Communication or collaboration
+2. Behavioral and situational questions may include:
    • Situational Scenarios
    • Problem-Solving & Analytical Thinking
    • Cultural Fit / Motivation
    • Self-Reflection / Growth
    • General Background / Past Experience
-
 
 3. The question must NOT overlap in topic, theme, structure, or intent with any previously asked questions:
 ${formattedHistory || "None"}
@@ -113,7 +123,9 @@ ${formattedHistory || "None"}
    • System design questions
    • Whiteboard-style problems
 
-
+8. Choose **one** of the following formats:
+   • A practical or conceptual technical question (e.g., "How would you clean inconsistent customer records across sources using SQL?")
+   • A behavioral or situational question (e.g., "Tell me about a time you had to challenge a teammate's assumptions using data.")
 
 Return ONLY the interview question — no explanations, no comments.`;
 
